@@ -1,0 +1,81 @@
+Далі необхідно реалізувати класи, що були описані на діаграмі класів, та програму з візуальним інтерфейсом.
+
+Почнемо з інтерфейсу Interface. Він може мати наступний вигляд:
+interface Interface {
+    public String ReadFile(String fileName);
+    public void WriteFile(String fileName, String content);
+}
+Клас RealSubject буде реалізувати цей інтерфейс, а також методи для роботи з файлами:
+class RealSubject implements Interface {
+    public String ReadFile(String fileName) {
+        // реалізація методу ReadFile для роботи з файлами
+    }
+    public void WriteFile(String fileName, String content) {
+        // реалізація методу WriteFile для роботи з файлами
+    }
+}
+Клас Proxy також реалізуватиме інтерфейс Interface, але при виклику методів ReadFile() та WriteFile() він буде використовувати об'єкт класу RealSubject:
+class Proxy implements Interface {
+    private RealSubject realSubject;
+    public String ReadFile(String fileName) {
+        // перевірка наявності файлу у кеші, якщо немає - виклик методу RealSubject.ReadFile()
+    }
+    public void WriteFile(String fileName, String content) {
+        // збереження файлу у кеші та виклик методу RealSubject.WriteFile()
+    }
+}
+Нарешті, можна реалізувати програму з візуальним інтерфейсом. 
+Для цього необхідно створити вікно з двома кнопками, що викликають методи ReadFile() та WriteFile() класу Proxy. Наприклад:
+import javax.swing.*;
+import java.awt.event.*;
+
+public class FileProxyGUI extends JFrame {
+    private Proxy proxy = new Proxy();
+    private JTextField fileNameField;
+    private JTextArea fileContentArea;
+    
+    public FileProxyGUI() {
+        // створення елементів вікна: текстового поля, текстової області та кнопок
+        fileNameField = new JTextField();
+        fileContentArea = new JTextArea();
+        JButton openButton = new JButton("Відкрити файл");
+        JButton saveButton = new JButton("Зберегти файл");
+        
+        // додавання елементів на вікно
+        add(fileNameField, BorderLayout.NORTH);
+        add(fileContentArea, BorderLayout.CENTER);
+        add(openButton, BorderLayout.WEST);
+        add(saveButton, BorderLayout.EAST);
+        
+        // налаштування обробників подій для кнопок
+        openButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String fileName = fileNameField.getText();
+                String content = proxy.ReadFile(fileName);
+                fileContentArea.setText(content);
+            }
+        });
+            saveButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String fileName = fileNameField.getText();
+            String content = fileContentArea.getText();
+            proxy.WriteFile(fileName, content);
+        }
+    });
+    
+    // налаштування властивостей вікна
+    setTitle("File Proxy");
+    setSize(400, 300);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setVisible(true);
+}
+
+public static void main(String[] args) {
+    new FileProxyGUI();
+}
+}
+
+Ця програма створює вікно з текстовим полем для введення назви файлу, текстовою областю для виведення його вмісту та двома кнопками для виклику методів ReadFile()
+та WriteFile() класу Proxy. При натисканні на кнопку "Відкрити файл" програма викликає метод ReadFile() класу Proxy та виводить вміст файлу у текстову область. 
+При натисканні на кнопку "Зберегти файл" програма зчитує вміст з текстової області та викликає метод WriteFile() класу Proxy для збереження файлу. 
+Таким чином, було побудовано діаграму класів та реалізовано програму з візуальним інтерфейсом, яка використовує розроблений Proxy для роботи з файлами.
